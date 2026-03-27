@@ -6,7 +6,7 @@ System manages Users and Tasks.
 - One Task belongs to one User
 
 ## Base URL
-http://localhost:8080/api
+http://localhost:10002
 
 ## User Endpoints
 
@@ -21,11 +21,8 @@ POST /users
   "role": "USER"
 }
 
-### Update user role
-PATCH /users/{id}/role
-{
-  "role": "ADMIN"
-}
+### Update user
+PATCH /users/{id}
 
 ### Delete user
 DELETE /users/{id}
@@ -48,11 +45,8 @@ POST /tasks
   "userId": 1
 }
 
-### Update task status
-PATCH /tasks/{id}/status
-{
-  "status": "DONE"
-}
+### Update task
+PATCH /tasks/{id}
 
 ### Delete task
 DELETE /tasks/{id}
