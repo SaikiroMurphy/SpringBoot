@@ -33,9 +33,9 @@ public class TaskRepository implements IRepository<Task, Integer>{
     }
 
     @Override
-    public Task add() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+    public Task add(Task task) {
+        tasks.add(task);
+        return task;
     }
 
     @Override

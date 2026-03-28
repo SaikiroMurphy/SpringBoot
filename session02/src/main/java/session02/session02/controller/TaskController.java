@@ -1,24 +1,26 @@
 package session02.session02.controller;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import session02.session02.model.Task;
 import session02.session02.service.TaskService;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
+@RequestMapping("/api")
 public class TaskController implements IController<Task, Integer>{
-    @Autowired
     private TaskService taskService;
 
 
@@ -30,11 +32,16 @@ public class TaskController implements IController<Task, Integer>{
         }
         return ResponseEntity.ok(taskService.findAll());
     }
-
+    
     @Override
     @PostMapping("/tasks")
-    public ResponseEntity<Task> add() {
-        return ResponseEntity.ok(taskService.add());
+    public ResponseEntity<Task> add(@RequestBody Task task) {
+        Task createdTask = taskService.add(task);
+        if (createdTask != null) {
+            URI uri = URI.create("/api/tasks/" + createdTask.getId());
+            return ResponseEntity.created(uri).body(createdTask);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @Override
@@ -50,7 +57,8 @@ public class TaskController implements IController<Task, Integer>{
     }
 
     @Override
-    public ResponseEntity<Task> findById(Integer id) {
-        return ResponseEntity.ok(taskService.findById(id));
+    public Task findById(Integer id) {
+        return taskService.findById(id);
     }
+
 }

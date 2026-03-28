@@ -30,7 +30,7 @@ public class UserRepository implements IRepository<User, Integer>{
     }
 
     @Override
-    public User add() {
+    public User add(User user) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'add'");
     }
@@ -49,7 +49,6 @@ public class UserRepository implements IRepository<User, Integer>{
 
     @Override
     public User findById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
     }
 }

@@ -2,17 +2,15 @@ package session02.session02.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import session02.session02.model.User;
 import session02.session02.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService implements IService<User, Integer>{
-    @Autowired
     private UserRepository userRepository;
 
     @Override
@@ -25,8 +23,8 @@ public class UserService implements IService<User, Integer>{
     }
 
     @Override
-    public User add() {
-        return userRepository.add();
+    public User add(User user) {
+        return userRepository.add(user);
     }
 
     @Override
