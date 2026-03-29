@@ -38,7 +38,7 @@ public class EnrollmentService implements IService<Enrollment>{
 
     @Override
     public Enrollment findById(String id) {
-        return enrollmentRepository.findById(id);
+        return enrollmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Enrollment not found!"));
     }
 
 }

@@ -38,7 +38,7 @@ public class CourseService implements IService<Course>{
 
     @Override
     public Course findById(String id) {
-        return courseRepository.findById(id);
+        return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found!"));
     }
 
 }

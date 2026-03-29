@@ -38,7 +38,7 @@ public class InstructorService implements IService<Instructor>{
 
     @Override
     public Instructor findById(String id) {
-        return instructorRepository.findById(id);
+        return instructorRepository.findById(id).orElseThrow(() -> new RuntimeException("Instructor not found!"));
     }
 
 }

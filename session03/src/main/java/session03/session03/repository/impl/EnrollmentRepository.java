@@ -2,6 +2,7 @@ package session03.session03.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +35,7 @@ public class EnrollmentRepository implements IRepository<Enrollment>{
 
     @Override
     public Enrollment update(String id, Enrollment t) {
-        Enrollment oldEnrollment = findById(id);
+        Enrollment oldEnrollment = findById(id).orElseThrow(() -> new RuntimeException("Enrollment not found!"));
 
         if (oldEnrollment != null) {
             oldEnrollment.setStudentName(t.getStudentName());
@@ -46,7 +47,7 @@ public class EnrollmentRepository implements IRepository<Enrollment>{
 
     @Override
     public Enrollment detele(String id) {
-        Enrollment oldEnrollment = findById(id);
+        Enrollment oldEnrollment = findById(id).orElseThrow(() -> new RuntimeException("Enrollment not found!"));
 
         if (oldEnrollment != null) {
             enrollments.remove(oldEnrollment);
@@ -56,8 +57,8 @@ public class EnrollmentRepository implements IRepository<Enrollment>{
     }
 
     @Override
-    public Enrollment findById(String id) {
-        return enrollments.stream().filter(i -> i.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+    public Optional<Enrollment> findById(String id) {
+        return enrollments.stream().filter(i -> i.getId().equalsIgnoreCase(id)).findFirst();
     }
 }
 

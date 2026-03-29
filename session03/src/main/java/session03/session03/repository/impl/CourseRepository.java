@@ -2,6 +2,7 @@ package session03.session03.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +40,7 @@ public class CourseRepository implements IRepository<Course>{
 
     @Override
     public Course update(String id, Course t) {
-        Course oldCourse = findById(id);
+        Course oldCourse = findById(id).orElseThrow(() -> new RuntimeException("Course not found!"));
 
         if (oldCourse != null) {
             oldCourse.setTitle(t.getTitle());
@@ -52,7 +53,7 @@ public class CourseRepository implements IRepository<Course>{
 
     @Override
     public Course detele(String id) {
-        Course oldCourse = findById(id);
+        Course oldCourse = findById(id).orElseThrow(() -> new RuntimeException("Course not found!"));
 
         if (oldCourse != null) {
             courses.remove(oldCourse);
@@ -62,8 +63,8 @@ public class CourseRepository implements IRepository<Course>{
     }
 
     @Override
-    public Course findById(String id) {
-        return courses.stream().filter(i -> i.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+    public Optional<Course> findById(String id) {
+        return courses.stream().filter(i -> i.getId().equalsIgnoreCase(id)).findFirst();
     }
 }
 

@@ -30,7 +30,7 @@ public class InstructorController implements IController<Instructor>{
     public ApiResponse<List<Instructor>> findAll() {
         List<Instructor> foundInstructors = instructorService.findAll();
 
-        if(foundInstructors != null && !foundInstructors.isEmpty()) {
+        if(!foundInstructors.isEmpty()) {
             return ApiResponse.ok(foundInstructors);
         }
         return ApiResponse.notFound();
@@ -50,32 +50,35 @@ public class InstructorController implements IController<Instructor>{
     @Override
     @PutMapping("/{id}")
     public ApiResponse<Instructor> update(@PathVariable String id, @RequestBody Instructor t) {
-        Instructor updatedInstructor = instructorService.update(id, t);
-        if (updatedInstructor != null) {
-            return ApiResponse.ok(updatedInstructor);
+        try {
+            return ApiResponse.ok(instructorService.update(id, t));
+
+        } catch (RuntimeException e) {
+            return ApiResponse.notFound();
         }
-        return ApiResponse.notFound();
+
     }
 
     @Override
     @GetMapping("/{id}")
     public ApiResponse<Instructor> findById(@PathVariable String id) {
-        Instructor foundInstructor = instructorService.findById(id);
-
-        if (foundInstructor != null) {
-            return ApiResponse.ok(foundInstructor);
+        try {
+            return ApiResponse.ok(instructorService.findById(id));
+            
+        } catch (RuntimeException e) {
+            return ApiResponse.notFound();
         }
-        return ApiResponse.notFound();
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ApiResponse<Instructor> delete(@PathVariable String id) {
-        Instructor deletedInstructor = instructorService.detele(id);
-        if (deletedInstructor != null) {
-            return ApiResponse.ok(deletedInstructor);
+        try {
+            return ApiResponse.ok(instructorService.detele(id));
+            
+        } catch (RuntimeException e) {
+            return ApiResponse.notFound();
         }
-        return ApiResponse.notFound();
     }
 
 }
