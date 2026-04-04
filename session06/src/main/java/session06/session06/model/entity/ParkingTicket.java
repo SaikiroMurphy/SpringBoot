@@ -22,7 +22,7 @@ public class ParkingTicket {
     @Column(name = "check_in_time", nullable = false)
     private LocalDateTime checkInTime;
 
-    @Column(name = "chek_out_time")
+    @Column(name = "check_out_time")
     private LocalDateTime checkOutTime;
 
     @ManyToOne
