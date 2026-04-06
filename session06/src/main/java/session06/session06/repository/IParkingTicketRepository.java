@@ -18,8 +18,7 @@ public interface IParkingTicketRepository extends JpaRepository<ParkingTicket, S
                 t.checkInTime,
                 t.checkOutTime)
             FROM ParkingTicket t
-            WHERE (t.checkInTime >= :start AND t.checkInTime < :end)
-            OR (t.checkOutTime >= :start AND t.checkOutTime < :end)
+            WHERE FUNCTION('date', t.checkInTime) = CURRENT_DATE
             """)
     List<TicketSummaryResponse> getSummaryToday(LocalDateTime start, LocalDateTime end);
 }
