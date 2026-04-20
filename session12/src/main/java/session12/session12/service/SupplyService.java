@@ -106,4 +106,59 @@ public class SupplyService {
 
         return suppliesPage.map(supplyMapper::toResponse);
     }
+
+    public Page<SupplyResponse> searchByName(String name, Pageable pageable) {
+        Page<Supply> suppliesPage = supplyRepository.findByNameContainingIgnoreCase(name, pageable);
+        log.info("Số lượng vật tư tìm thấy với tên chứa '{}': {}", name, suppliesPage.getTotalElements());
+
+        if (suppliesPage.isEmpty()) {
+            log.info("Không tìm thấy vật tư nào với tên chứa '{}'", name);
+            return Page.empty();
+        }
+
+        return suppliesPage.map(supplyMapper::toResponse);
+    }
+
+    public SupplyResponse exportSupply(Long id, Integer quantity) {
+        Supply supply = supplyRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Không tìm thấy vật tư với ID: {}", id);
+                    return new EntityNotFoundException("Không tìm thấy vật tư với ID: " + id);
+                });
+
+        if (supply.getIsDeleted() != null && supply.getIsDeleted()) {
+            log.warn("Vật tư với ID: {} đã bị xóa trước đó", id);
+            throw new EntityNotFoundException("Vật tư đã bị xóa");
+        }
+
+        if (supply.getQuantity() < quantity) {
+            log.warn("Số lượng vật tư với ID: {} không đủ để xuất. Yêu cầu: {}, Sẵn có: {}", id, quantity, supply.getQuantity());
+            throw new IllegalArgumentException("Số lượng vật tư không đủ để xuất");
+        }
+
+        supply.setQuantity(supply.getQuantity() - quantity);
+        supplyRepository.save(supply);
+        log.info("Đã xuất {} đơn vị của vật tư với ID: {}. Số lượng còn lại: {}", quantity, id, supply.getQuantity());
+
+        return supplyMapper.toResponse(supply);
+    }
+
+    public SupplyResponse importSupply(Long id, Integer quantity) {
+        Supply supply = supplyRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Không tìm thấy vật tư với ID: {}", id);
+                    return new EntityNotFoundException("Không tìm thấy vật tư với ID: " + id);
+                });
+
+        if (supply.getIsDeleted() != null && supply.getIsDeleted()) {
+            log.warn("Vật tư với ID: {} đã bị xóa trước đó", id);
+            throw new EntityNotFoundException("Vật tư đã bị xóa");
+        }
+
+        supply.setQuantity(supply.getQuantity() + quantity);
+        supplyRepository.save(supply);
+        log.info("Đã nhập {} đơn vị của vật tư với ID: {}. Số lượng hiện tại: {}", quantity, id, supply.getQuantity());
+
+        return supplyMapper.toResponse(supply);
+    }
 }

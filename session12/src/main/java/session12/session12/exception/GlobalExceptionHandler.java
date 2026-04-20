@@ -11,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -119,4 +120,20 @@ public class GlobalExceptionHandler {
         log.error("HTTP method not supported: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(res);
     }
-}
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiResponse<String>> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+
+        String errorMsg = ex.getAllErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Dữ liệu không hợp lệ");
+
+        ApiResponse<String> response = new ApiResponse<>();
+        response.setStatus(ApiStatus.FAILED);
+        response.setMessage(errorMsg);
+
+        log.warn("Validation error: {}", errorMsg, ex);
+
+        return ResponseEntity.badRequest().body(response);
+    }}

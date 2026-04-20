@@ -1,9 +1,11 @@
 package session12.session12.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import session12.session12.enums.ApiStatus;
 import session12.session12.model.dto.request.SupplyRequest;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +83,50 @@ public class SupplyController {
                 supplies.getTotalPages()
             )
         );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<SupplyResponse>>> searchByName(
+            @RequestParam(required = false) String name,
+            @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<SupplyResponse> supplies = supplyService.searchByName(name, pageable);
+        ApiResponse<List<SupplyResponse>> response = new ApiResponse<>();
+        response.setStatus(ApiStatus.SUCCESS);
+        response.setMessage("Tìm kiếm vật tư thành công");
+        response.setData(supplies.getContent());
+        response.setMeta(
+            new PageResponse(
+                supplies.getNumber(),
+                supplies.getSize(),
+                supplies.getTotalElements(),
+                supplies.getTotalPages()
+            )
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PatchMapping("/{id}/export")
+    public ResponseEntity<ApiResponse<SupplyResponse>> exportSupply(
+        @PathVariable Long id,
+        @RequestParam @Min(value = 1, message = "Số lượng xuất phải lớn hơn 0") Integer quantity) {
+        SupplyResponse exportedSupply = supplyService.exportSupply(id, quantity);
+        ApiResponse<SupplyResponse> response = new ApiResponse<>();
+        response.setStatus(ApiStatus.SUCCESS);
+        response.setMessage("Xuất vật tư thành công");
+        response.setData(exportedSupply);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    
+    @PatchMapping("/{id}/import")
+    public ResponseEntity<ApiResponse<SupplyResponse>> importSupply(
+        @PathVariable Long id,
+        @RequestParam @Min(value = 1, message = "Số lượng nhập phải lớn hơn 0") Integer quantity) {
+        SupplyResponse importedSupply = supplyService.importSupply(id, quantity);
+        ApiResponse<SupplyResponse> response = new ApiResponse<>();
+        response.setStatus(ApiStatus.SUCCESS);
+        response.setMessage("Nhập vật tư thành công");
+        response.setData(importedSupply);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

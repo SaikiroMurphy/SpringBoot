@@ -12,4 +12,6 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
     Page<Supply> findByIsDeletedTrue(Pageable pageable);
 
     Page<Supply> findByIsDeletedFalse(Pageable pageable);
+
+    Page<Supply> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
