@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import session15.session15.exception.JwtExceptionCustom;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;

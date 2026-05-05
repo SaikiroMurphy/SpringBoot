@@ -1,20 +1,27 @@
 package session15.session15.service;
 
-import java.security.Key;
+// import java.security.Key;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+// import io.jsonwebtoken.Jwts;
+// import io.jsonwebtoken.SignatureAlgorithm;
+// import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import session15.session15.exception.BadCredentialsExceptionCustom;
+import session15.session15.exception.DuplicateResourceException;
+import session15.session15.model.dto.request.UserCreateDTO;
+import session15.session15.model.dto.request.UserLoginDTO;
+import session15.session15.model.dto.response.JwtResponse;
+import session15.session15.model.entity.User;
 import session15.session15.repository.UserRepository;
 import session15.session15.security.jwt.JwtProvider;
 
@@ -58,7 +65,7 @@ public class AuthService {
             throw new BadCredentialsExceptionCustom("Email hoặc mật khẩu không đúng");
         }
 
-        User user = userRepository.findUserByEmail(req.getEmail())
+        User user = userRepository.findByEmail(req.getEmail())
                 .orElseThrow();
 
         JwtResponse res = JwtResponse.builder()
